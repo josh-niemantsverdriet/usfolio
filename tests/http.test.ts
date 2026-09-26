@@ -34,7 +34,9 @@ async function call(
       method,
       url: `http://localhost/api/${path}`,
       params: { path },
-      headers: subject ? { authorization: `Bearer ${subject}` } : {},
+      headers: subject
+        ? { "x-usfolio-authorization": `Bearer ${subject}` }
+        : {},
       body: body ? { string: JSON.stringify(body) } : undefined,
     }),
     ctx,
@@ -44,6 +46,28 @@ beforeEach(() => {
   holder.state = emptyState();
 });
 describe("HTTP API integration with transactional in-memory repository", () => {
+  it("ignores Azure's platform authorization token and validates the dedicated application header", async () => {
+    const request = (headers: Record<string, string>) =>
+      new HttpRequest({
+        method: "GET",
+        url: "http://localhost/api/me",
+        params: { path: "me" },
+        headers,
+      });
+    expect(
+      (await handler(request({ authorization: "Bearer platform-token" }), ctx))
+        .status,
+    ).toBe(401);
+    const response = await handler(
+      request({
+        authorization: "Bearer platform-token",
+        "x-usfolio-authorization": "Bearer alice",
+      }),
+      ctx,
+    );
+    expect(response.status).toBe(200);
+    expect(holder.state.profiles[0].subject).toBe("alice");
+  });
   it("requires authentication and ignores browser supplied identity", async () => {
     expect((await call(null)).status).toBe(401);
     const me = (await call("alice")).jsonBody as any;

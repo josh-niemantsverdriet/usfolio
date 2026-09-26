@@ -17,7 +17,11 @@ export async function handler(
     "X-Content-Type-Options": "nosniff",
   };
   try {
-    const subject = await authenticate(req.headers.get("authorization"));
+    // SWA reserves/replaces Authorization for its managed Functions connection.
+    // This header still carries a fully verified Auth0 JWT, never a user ID.
+    const subject = await authenticate(
+      req.headers.get("x-usfolio-authorization"),
+    );
     const path = req.params.path || "me",
       method = req.method;
     let body: Record<string, unknown> = {};

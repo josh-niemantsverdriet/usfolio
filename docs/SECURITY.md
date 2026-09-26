@@ -2,6 +2,8 @@
 
 ## Trust boundaries
 
+The browser sends its signed access token as `X-Usfolio-Authorization: Bearer <token>`. Azure Static Web Apps reserves/replaces the standard `Authorization` header when proxying to managed Functions, so the API deliberately ignores that platform header. The dedicated header confers no trust by itself: the same full Auth0 JWT validation applies, and a forged value is rejected.
+
 Every HTTP request is authenticated before database access. `jose` validates an RS256 JWT against the configured Auth0 tenant JWKS, issuer, audience and expiration. The verified subject selects the user; browser-supplied IDs only identify requested resources and confer no authority. Auth0 passwords, refresh tokens and email addresses are not stored by Usfolio. The SDK keeps access tokens in memory.
 
 The Functions handler runs all data operations through `transaction()` and `Service`. The snapshot includes the owner’s own details plus **only shared** details belonging to their current partner. No public invitation-preview endpoint or unfiltered detail/search endpoint exists. Search runs on the already-filtered snapshot. Unknown or inaccessible detail IDs return 404. Enabling partner editing on one profile does not enable it on the other. Partners cannot delete or make details private, even by direct API requests.

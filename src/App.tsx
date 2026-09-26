@@ -209,7 +209,7 @@ export default function App({ auth }: { auth?: Auth }) {
       const response = await fetch(`/api/${path}`, {
         method,
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          "X-Usfolio-Authorization": `Bearer ${accessToken}`,
           ...(body ? { "Content-Type": "application/json" } : {}),
         },
         body: body ? JSON.stringify(body) : undefined,
