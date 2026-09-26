@@ -1,0 +1,22 @@
+{
+  "name": "usfolio-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/api/src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "func start",
+    "migrate": "node --env-file=../.env.server scripts/migrate.mjs"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.7.0",
+    "jose": "^6.0.0",
+    "mssql": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/mssql": "^9.1.7",
+    "@types/node": "^22.0.0",
+    "typescript": "~5.8.3"
+  }
+}

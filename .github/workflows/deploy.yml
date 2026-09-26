@@ -1,0 +1,36 @@
+name: Deploy Usfolio (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      VITE_AUTH0_DOMAIN: ${{ vars.VITE_AUTH0_DOMAIN }}
+      VITE_AUTH0_CLIENT_ID: ${{ vars.VITE_AUTH0_CLIENT_ID }}
+      VITE_AUTH0_AUDIENCE: ${{ vars.VITE_AUTH0_AUDIENCE }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require production authentication settings
+        run: |
+          test -n "$VITE_AUTH0_DOMAIN"
+          test -n "$VITE_AUTH0_CLIENT_ID"
+          test -n "$VITE_AUTH0_AUDIENCE"
+      - run: npm ci
+      - run: npm ci --prefix api
+      - run: npm run check
+      - run: npm prune --omit=dev --prefix api
+      - uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: dist
+          api_location: api
+          output_location: ""
+          skip_app_build: true
+          skip_api_build: true

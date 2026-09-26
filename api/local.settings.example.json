@@ -1,0 +1,1 @@
+{"IsEncrypted":false,"Values":{"FUNCTIONS_WORKER_RUNTIME":"node","AUTH0_DOMAIN":"your-tenant.us.auth0.com","AUTH0_AUDIENCE":"https://usfolio-api","AUTH0_MANAGEMENT_CLIENT_ID":"","AUTH0_MANAGEMENT_CLIENT_SECRET":"","SQL_SERVER":"localhost","SQL_DATABASE":"usfolio","SQL_USER":"usfolio_app","SQL_PASSWORD":"","SQL_TRUST_CERTIFICATE":"true"}}
