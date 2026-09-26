@@ -8,3 +8,5 @@ api/local.settings.json
 playwright-report/
 test-results/
 *.tsbuildinfo
+.config/auth0/
+*.credential.xml

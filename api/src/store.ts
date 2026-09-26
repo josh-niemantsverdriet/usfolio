@@ -3,6 +3,13 @@ import { Service, emptyState } from "./service.js";
 import type { State } from "../../shared/types.js";
 
 let pool: Promise<sql.ConnectionPool> | undefined;
+export async function closeStore(): Promise<void> {
+  if (pool) {
+    const connection = await pool;
+    pool = undefined;
+    await connection.close();
+  }
+}
 export function connectionConfig(): sql.config {
   for (const key of ["SQL_SERVER", "SQL_DATABASE", "SQL_USER", "SQL_PASSWORD"])
     if (!process.env[key]) throw new Error(`Missing ${key}`);
